@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu — Golden Pizza Cafe, Bahal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="icons.js"></script>
+<style>
+  :root{
+    --char:#1c130f; --stone:#2c1a14; --gold:#ff8a1e; --gold-2:#ffb627;
+    --cream:#fff7ee; --paper:#fffaf3; --ink:#2a1c14; --muted:#8a6f60;
+    --line:#e7d9c9; --radius:14px; --shadow:0 8px 22px rgba(28,19,15,.14);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Inter',system-ui,sans-serif; color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #3a2119 0%, transparent 60%),
+      radial-gradient(1000px 500px at 110% 10%, #46261b 0%, transparent 55%),
+      var(--char);
+    padding-bottom:110px;
+  }
+  header.site{ padding:20px 16px 70px; text-align:center; color:var(--cream); position:relative; }
+  header.site::after{ content:""; position:absolute; left:0; right:0; bottom:0; height:50px; background:var(--cream); border-radius:50% 50% 0 0/100% 100% 0 0; transform:scaleX(1.3); }
+  .brand{ display:flex; align-items:center; justify-content:center; gap:10px; font-family:'Baloo 2',sans-serif; font-weight:800; font-size:22px; position:relative; z-index:2; }
+  .brand .badge{ width:34px;height:34px;border-radius:50%; background:conic-gradient(from 180deg, var(--gold), var(--gold-2), var(--gold)); display:flex;align-items:center;justify-content:center; font-size:16px; box-shadow:0 3px 8px rgba(0,0,0,.35); }
+  .brand small{ display:block; font-family:'Inter'; font-weight:600; font-size:11px; color:var(--gold-2); letter-spacing:1.5px; }
+  .tagline{ font-size:13px; color:#e9d3bd; margin-top:6px; position:relative; z-index:2; }
+
+  .wrap{ max-width:820px; margin:-40px auto 0; padding:0 16px; position:relative; z-index:2; }
+
+  .catnav{ display:flex; gap:8px; overflow-x:auto; padding:4px 2px 18px; scrollbar-width:none; }
+  .catnav::-webkit-scrollbar{ display:none; }
+  .catnav a{ flex:none; background:var(--paper); border:1px solid var(--line); color:var(--ink); text-decoration:none; font-weight:700; font-size:12.5px; padding:8px 14px; border-radius:999px; box-shadow:var(--shadow); }
+
+  section.cat{ margin-bottom:26px; }
+  section.cat h2{ font-family:'Baloo 2',sans-serif; color:var(--cream); font-size:19px; margin:0 0 12px; display:flex; align-items:center; gap:8px; }
+  section.cat h2 .icowrap{ width:28px; height:28px; border-radius:50%; overflow:hidden; }
+  section.cat h2 .icowrap svg{ width:100%; height:100%; }
+
+  .item{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:12px; margin-bottom:10px;
+    display:grid; grid-template-columns:52px 1fr auto; gap:12px; align-items:center;
+  }
+  .item .icowrap{ width:52px; height:52px; border-radius:14px; overflow:hidden; }
+  .item .icowrap svg{ width:100%; height:100%; }
+  .item .info strong{ display:block; font-size:14.5px; }
+  .item .info .desc{ font-size:12px; color:var(--muted); margin-top:2px; }
+  .item .prices{ display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; }
+  .sizebtn{
+    border:1.5px solid var(--line); background:#fff; border-radius:8px; padding:6px 10px;
+    font-size:12px; font-weight:700; cursor:pointer; color:var(--ink); text-align:center; min-width:56px;
+  }
+  .sizebtn small{ display:block; font-weight:600; color:var(--muted); font-size:10px; }
+  .sizebtn.active{ border-color:var(--gold); background:#fff3e6; color:#a05a00; }
+  .addbtn{
+    border:none; background:var(--stone); color:var(--gold-2); font-weight:800; font-size:12.5px;
+    padding:9px 14px; border-radius:10px; cursor:pointer; white-space:nowrap;
+  }
+  .addbtn.in-cart{ background:var(--good,#2e7d46); color:#fff; }
+
+  .cartbar{
+    position:fixed; left:0; right:0; bottom:0; z-index:20;
+    background:linear-gradient(135deg, var(--gold), var(--gold-2));
+    color:#1c130f; padding:14px 18px; display:none;
+    align-items:center; justify-content:space-between; box-shadow:0 -8px 20px rgba(0,0,0,.25);
+  }
+  .cartbar.show{ display:flex; }
+  .cartbar .count{ font-family:'Baloo 2',sans-serif; font-weight:800; font-size:15px; }
+  .cartbar .amt{ font-size:13px; font-weight:600; }
+  .cartbar button{
+    border:none; background:var(--stone); color:var(--gold-2); font-weight:800; padding:10px 18px;
+    border-radius:10px; cursor:pointer; font-size:13.5px;
+  }
+  footer{ text-align:center; color:#c9b39f; font-size:12px; padding:26px 16px 10px; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="brand"><span class="badge">🍕</span><div>GOLDEN PIZZA CAFE<small>HOT · DELICIOUS · CRISPY — BAHAL</small></div></div>
+  <div class="tagline">Pizza starts from ₹59 · Free delivery up to 5 KM</div>
+</header>
+
+<div class="wrap">
+  <div class="catnav" id="catnav"></div>
+  <div id="menuRoot"></div>
+</div>
+
+<div class="cartbar" id="cartbar">
+  <div><div class="count" id="cartCount">0 items</div><div class="amt" id="cartAmt">₹0</div></div>
+  <button id="checkoutBtn">Checkout →</button>
+</div>
+
+<footer>Golden Pizza Cafe · Bahal (Bhiwani) · 7027218194</footer>
+
+<script>
+/* =========================================================================
+   Catalog transcribed from Golden Pizza Cafe's menu boards (Menu A/B/C).
+   sizes: null => single price ("Regular"); otherwise [S, M, L] prices.
+   ========================================================================= */
+const CATALOG = [
+  { cat: "pizza", title: "Single Topping Pizza", icon: "pizza", items: [
+    { name: "Tomato Pizza", price: 59 },
+    { name: "Capsicum Pizza", price: 59 },
+    { name: "Onion Pizza", price: 59 },
+    { name: "Sweet Corn Pizza", price: 59 },
+  ]},
+  { cat: "pizza", title: "Double Topping Pizza", icon: "pizza", items: [
+    { name: "Onion + Capsicum Pizza", sizes: [79, 149, 240] },
+    { name: "Corn + Tomato Pizza", sizes: [79, 149, 240] },
+    { name: "Jalapeno + Corn Pizza", sizes: [79, 149, 240] },
+    { name: "Paneer + Corn Pizza", sizes: [99, 179, 259] },
+    { name: "Paneer + Onion Pizza", sizes: [99, 179, 259] },
+  ]},
+  { cat: "pizza", title: "Veg. Mix Pizza", icon: "pizza", items: [
+    { name: "Cheese Margherita", sizes: [99, 149, 249] },
+    { name: "Fresh Veggie", desc: "Onion, capsicum, tomato", sizes: [120, 179, 279] },
+    { name: "Tandoori Paneer", desc: "Onion, capsicum, corn, tomato, paneer, black olives", sizes: [149, 199, 299] },
+    { name: "Farm House", desc: "Onion, capsicum, corn, mushroom", sizes: [149, 199, 349] },
+    { name: "Peppy Paneer", desc: "Onion, capsicum, paneer, red paprika", sizes: [149, 199, 349] },
+    { name: "Paneer Makhni", desc: "Onion, capsicum, paneer", sizes: [149, 199, 349] },
+    { name: "Exotica", desc: "Tomato, corn, jalapeno, black olives, capsicum", sizes: [149, 220, 349] },
+    { name: "Paneer Chipotle", desc: "Onion, capsicum, paneer", sizes: [149, 199, 349] },
+    { name: "Family Special", desc: "Onion, capsicum, tomato, jalapeno, black olives, paneer", sizes: [149, 199, 349] },
+    { name: "Yam Dum Extra Cheese", desc: "Onion, capsicum, tomato, corn, jalapeno", sizes: [149, 220, 399] },
+    { name: "Veg Extra Vanzza Extra Topping", desc: "Onion, capsicum, tomato, jalapeno, black olives", sizes: [149, 220, 399] },
+  ]},
+  { cat: "sandwich", title: "Sandwich", icon: "sandwich", items: [
+    { name: "Veg Sandwich", price: 69 },
+    { name: "American Veg Sandwich", price: 79 },
+    { name: "Tandoori Paneer Sandwich", price: 99 },
+    { name: "Paneer Makhni Sandwich", price: 120 },
+    { name: "Paneer Chipotle Sandwich", price: 120 },
+    { name: "Golden Pizza Special Sandwich", price: 130 },
+  ]},
+  { cat: "momos", title: "Momos", icon: "momos", items: [
+    { name: "Steam Momos", price: 59 },
+    { name: "Fried Momos", price: 69 },
+    { name: "Gravy Momos", price: 99 },
+  ]},
+  { cat: "burger", title: "Burger", icon: "burger", items: [
+    { name: "Veg Burger", price: 39 },
+    { name: "Aloo Tikki Burger", price: 49 },
+    { name: "Veg Tikki Burger", price: 59 },
+    { name: "Paneer Burger", price: 69 },
+    { name: "Tandoori Burger", price: 69 },
+    { name: "Makhni Burger", price: 79 },
+  ]},
+  { cat: "mocktail", title: "Mocktail / Mojito", icon: "mocktail", items: [
+    { name: "Strawberry", price: 49 },
+    { name: "Mint Mojito", price: 59 },
+    { name: "Green Apple", price: 69 },
+    { name: "Lemon Tea", price: 69 },
+  ]},
+  { cat: "noodles", title: "Noodles", icon: "noodles", items: [
+    { name: "Chinese Noodle", price: 59 },
+    { name: "Paneer Noodles", price: 79 },
+    { name: "Manchurian", price: 79 },
+    { name: "Chilli Potato", price: 89 },
+  ]},
+  { cat: "starter", title: "Starter", icon: "starter", items: [
+    { name: "French Fries", price: 69 },
+    { name: "Piri Piri Fries", price: 79 },
+    { name: "Cheese Fries", price: 99 },
+  ]},
+  { cat: "pasta", title: "Pasta", icon: "pasta", items: [
+    { name: "White Sauce Pasta", price: 79 },
+    { name: "Red Sauce Pasta", price: 89 },
+    { name: "Mix Sauce Pasta", price: 120 },
+    { name: "Makhni Sauce Pasta", price: 149 },
+    { name: "Tandoori Sauce Pasta", price: 149 },
+  ]},
+  { cat: "maggie", title: "Maggie", icon: "maggie", items: [
+    { name: "Plain Maggie", price: 39 },
+    { name: "Veg Maggie", price: 49 },
+    { name: "Spice Tadka Maggie", price: 59 },
+    { name: "Maggie Mania", price: 69 },
+  ]},
+  { cat: "shake", title: "Shake", icon: "shake", items: [
+    { name: "Banana Shake", price: 49 },
+    { name: "Strawberry Shake", price: 59 },
+    { name: "Blue Berry Shake", price: 69 },
+    { name: "Butter Scotch Shake", price: 69 },
+    { name: "Oreo Shake", price: 79 },
+  ]},
+  { cat: "coffee", title: "Coffee", icon: "coffee", items: [
+    { name: "Hot Coffee", price: 39 },
+    { name: "Cold Coffee", price: 59 },
+    { name: "Cold Coffee + Ice Cream", price: 79 },
+  ]},
+];
+
+const SIZE_LABELS = ["Small", "Medium", "Large"];
+let cart = {}; // key: "sectionIdx-itemIdx-size" -> {name, size, price, qty}
+
+function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,"-"); }
+
+function render(){
+  const nav = document.getElementById("catnav");
+  const root = document.getElementById("menuRoot");
+  nav.innerHTML = "";
+  root.innerHTML = "";
+
+  CATALOG.forEach((section, si) => {
+    const anchorId = "cat-" + slug(section.title);
+    const navLink = document.createElement("a");
+    navLink.href = "#" + anchorId;
+    navLink.textContent = section.title;
+    nav.appendChild(navLink);
+
+    const secEl = document.createElement("section");
+    secEl.className = "cat";
+    secEl.id = anchorId;
+    secEl.innerHTML = `<h2><span class="icowrap">${ICONS[section.icon]}</span>${section.title}</h2>`;
+
+    section.items.forEach((item, ii) => {
+      const itemEl = document.createElement("div");
+      itemEl.className = "item";
+      const descHtml = item.desc ? `<div class="desc">${item.desc}</div>` : "";
+
+      if (item.sizes) {
+        const priceHtml = item.sizes.map((p, sIdx) =>
+          `<button class="sizebtn" data-si="${si}" data-ii="${ii}" data-size="${sIdx}">₹${p}<small>${SIZE_LABELS[sIdx]}</small></button>`
+        ).join("");
+        itemEl.innerHTML = `
+          <span class="icowrap">${ICONS[section.icon]}</span>
+          <div class="info"><strong>${item.name}</strong>${descHtml}<div class="prices">${priceHtml}</div></div>
+          <button class="addbtn" data-si="${si}" data-ii="${ii}" disabled>Select size</button>`;
+      } else {
+        itemEl.innerHTML = `
+          <span class="icowrap">${ICONS[section.icon]}</span>
+          <div class="info"><strong>${item.name}</strong>${descHtml}<div class="prices"><span class="sizebtn active" style="cursor:default;">₹${item.price}</span></div></div>
+          <button class="addbtn" data-si="${si}" data-ii="${ii}">Add +</button>`;
+      }
+      secEl.appendChild(itemEl);
+    });
+    root.appendChild(secEl);
+  });
+
+  // size selection
+  root.querySelectorAll(".sizebtn[data-si]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const { si, ii, size } = btn.dataset;
+      const parent = btn.closest(".item");
+      parent.querySelectorAll(".sizebtn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      parent.dataset.selectedSize = size;
+      const addBtn = parent.querySelector(".addbtn");
+      addBtn.disabled = false;
+      addBtn.textContent = "Add +";
+      addBtn.classList.remove("in-cart");
+    });
+  });
+
+  // add to cart
+  root.querySelectorAll(".addbtn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const { si, ii } = btn.dataset;
+      const section = CATALOG[si];
+      const item = section.items[ii];
+      const parent = btn.closest(".item");
+      let size = null, price, sizeLabel = "-";
+      if (item.sizes) {
+        size = parent.dataset.selectedSize;
+        if (size === undefined) return;
+        price = item.sizes[size];
+        sizeLabel = SIZE_LABELS[size];
+      } else {
+        price = item.price;
+      }
+      const key = `${si}-${ii}-${size ?? "x"}`;
+      if (cart[key]) {
+        cart[key].qty += 1;
+      } else {
+        cart[key] = { id: key, name: item.name, size: sizeLabel, qty: 1, price, icon: section.icon };
+      }
+      btn.textContent = `In cart (${cart[key].qty})`;
+      btn.classList.add("in-cart");
+      updateCartBar();
+    });
+  });
+}
+
+function updateCartBar(){
+  const entries = Object.values(cart);
+  const count = entries.reduce((s, i) => s + i.qty, 0);
+  const amt = entries.reduce((s, i) => s + i.qty * i.price, 0);
+  const bar = document.getElementById("cartbar");
+  if (count > 0) {
+    bar.classList.add("show");
+    document.getElementById("cartCount").textContent = `${count} item${count > 1 ? "s" : ""}`;
+    document.getElementById("cartAmt").textContent = `₹${amt}`;
+  } else {
+    bar.classList.remove("show");
+  }
+}
+
+document.getElementById("checkoutBtn").addEventListener("click", () => {
+  const items = Object.values(cart);
+  if (!items.length) return;
+  const encoded = encodeURIComponent(JSON.stringify(items));
+  window.location.href = `checkout.html?cart=${encoded}`;
+});
+
+render();
+</script>
+</body>
+</html>
