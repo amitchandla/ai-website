@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Golden Pizza Cafe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="icons.js"></script>
+<script>window.GPC_ACTIVE_PAGE = "about";</script>
+<style>
+  :root{
+    --char:#1c130f; --stone:#2c1a14; --gold:#ff8a1e; --gold-2:#ffb627;
+    --cream:#fff7ee; --paper:#fffaf3; --ink:#2a1c14; --muted:#8a6f60;
+    --line:#e7d9c9; --radius:16px; --shadow:0 10px 26px rgba(28,19,15,.16);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Inter',system-ui,sans-serif; color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #3a2119 0%, transparent 60%),
+      radial-gradient(1000px 500px at 110% 10%, #46261b 0%, transparent 55%),
+      var(--char);
+  }
+  .hero{ padding:40px 20px 70px; text-align:center; color:var(--cream); position:relative; overflow:hidden; }
+  .hero::after{ content:""; position:absolute; left:0; right:0; bottom:0; height:50px; background:var(--cream); border-radius:50% 50% 0 0/100% 100% 0 0; transform:scaleX(1.3); }
+  .hero h1{ font-family:'Baloo 2',sans-serif; font-size:28px; margin:0; position:relative; z-index:2; }
+  .hero p{ color:#e9d3bd; font-size:13.5px; margin-top:8px; position:relative; z-index:2; }
+
+  .wrap{ max-width:860px; margin:-40px auto 0; padding:0 18px 60px; position:relative; z-index:2; }
+
+  .card{ background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px; margin-bottom:20px; }
+  .card h2{ font-family:'Baloo 2',sans-serif; font-size:19px; margin:0 0 10px; }
+  .card p{ font-size:14px; line-height:1.7; color:var(--ink); margin:0 0 10px; }
+  .card p:last-child{ margin-bottom:0; }
+
+  .gallery{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  @media (max-width:640px){ .gallery{ grid-template-columns:1fr; } }
+  .gallery img{ width:100%; height:180px; object-fit:cover; border-radius:12px; border:1px solid var(--line); }
+
+  .feature-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  @media (max-width:640px){ .feature-grid{ grid-template-columns:1fr; } }
+  .feature{ text-align:center; }
+  .feature .icowrap{ width:48px; height:48px; margin:0 auto 8px; border-radius:50%; overflow:hidden; }
+  .feature .icowrap svg{ width:100%; height:100%; }
+  .feature strong{ display:block; font-size:14px; margin-bottom:3px; }
+  .feature span{ font-size:12.5px; color:var(--muted); }
+
+  .cta-row{ text-align:center; margin-top:6px; }
+  .btn{ font-family:'Baloo 2',sans-serif; font-weight:700; font-size:14.5px; padding:12px 24px; border-radius:12px; text-decoration:none; display:inline-block; background:linear-gradient(135deg, var(--gold), var(--gold-2)); color:#1c130f; }
+
+  footer{ text-align:center; color:#c9b39f; font-size:12.5px; padding:10px 16px 30px; }
+  footer a{ color:var(--gold-2); text-decoration:none; }
+</style>
+</head>
+<body>
+<div id="site-nav"></div>
+<script src="nav.js"></script>
+
+<section class="hero">
+  <h1>Our Story</h1>
+  <p>Hot, delicious &amp; crispy food — made fresh in Bahal</p>
+</section>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2>Golden Pizza Cafe</h2>
+    <p>Golden Pizza Cafe is a neighbourhood pizza &amp; cafe joint on Pilani Road in Bahal (Bhiwani), serving hot and crispy food to the town — from budget single-topping pizzas starting at ₹59, to sandwiches, burgers, momos, pasta, shakes and mocktails.</p>
+    <p>Every order is prepared fresh to order, and we deliver free within 5&nbsp;KM of the cafe.</p>
+  </div>
+
+  <div class="card">
+    <h2>Inside the Cafe</h2>
+    <div class="gallery">
+      <img src="assets/ambience-1.jpg" alt="Golden Pizza Cafe seating area">
+      <img src="assets/ambience-2.jpg" alt="Golden Pizza Cafe corner table">
+      <img src="assets/ambience-3.jpg" alt="Golden Pizza Cafe dining area">
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>What We're Known For</h2>
+    <div class="feature-grid">
+      <div class="feature"><div class="icowrap" id="ico-1"></div><strong>Wide Menu</strong><span>Pizza, sandwiches, burgers, momos, pasta, shakes &amp; more</span></div>
+      <div class="feature"><div class="icowrap" id="ico-2"></div><strong>Party Hall</strong><span>Birthday, anniversary &amp; small event seating available</span></div>
+      <div class="feature"><div class="icowrap" id="ico-3"></div><strong>Custom Cakes</strong><span>Birthday &amp; anniversary cakes, priced below market rate</span></div>
+    </div>
+  </div>
+
+  <div class="card" style="text-align:center;">
+    <h2>Celebrate With Us</h2>
+    <p>Book the party hall for birthday celebrations, anniversaries, or small get-togethers — mocktails, cakes and a full menu on hand.</p>
+    <div class="cta-row"><a href="contact.html" class="btn">Get in Touch</a></div>
+  </div>
+
+</div>
+
+<footer>
+  Golden Pizza Cafe · Nearby Pilani Road, Bahal (Bhiwani) · <a href="tel:7027218194">7027218194</a>
+</footer>
+
+<script>
+  document.getElementById("ico-1").innerHTML = ICONS.pizza;
+  document.getElementById("ico-2").innerHTML = ICONS.mocktail;
+  document.getElementById("ico-3").innerHTML = ICONS.shake;
+</script>
+</body>
+</html>

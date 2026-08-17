@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — Golden Pizza Cafe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="icons.js"></script>
+<script>window.GPC_ACTIVE_PAGE = "menu";</script>
+<style>
+  :root{
+    --char:#1c130f;
+    --stone:#2c1a14;
+    --stone-2:#3a2119;
+    --gold:#ff8a1e;
+    --gold-2:#ffb627;
+    --cream:#fff7ee;
+    --paper:#fffaf3;
+    --ink:#2a1c14;
+    --muted:#8a6f60;
+    --line:#e7d9c9;
+    --good:#2e7d46;
+    --good-bg:#e9f6ec;
+    --bad:#d64545;
+    --bad-bg:#fdecec;
+    --radius:14px;
+    --shadow:0 10px 30px rgba(28,19,15,.18);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',system-ui,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #3a2119 0%, transparent 60%),
+      radial-gradient(1000px 500px at 110% 10%, #46261b 0%, transparent 55%),
+      var(--char);
+    color:var(--ink);
+    min-height:100vh;
+  }
+  .display{font-family:'Baloo 2',system-ui,sans-serif;}
+
+  /* ---------- Header ---------- */
+  header.site{
+    padding:22px 20px 90px;
+    text-align:center;
+    color:var(--cream);
+    position:relative;
+    overflow:hidden;
+  }
+  header.site::after{
+    content:"";
+    position:absolute; left:0; right:0; bottom:0; height:60px;
+    background:var(--cream);
+    border-radius:50% 50% 0 0 / 100% 100% 0 0;
+    transform:scaleX(1.3);
+  }
+  .brand{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    font-family:'Baloo 2',sans-serif; font-weight:800; font-size:22px;
+    letter-spacing:.5px;
+  }
+  .brand .badge{
+    width:34px;height:34px;border-radius:50%;
+    background:conic-gradient(from 180deg, var(--gold), var(--gold-2), var(--gold));
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px; box-shadow:0 3px 8px rgba(0,0,0,.35);
+  }
+  .brand small{display:block;font-family:'Inter';font-weight:600;font-size:11px;color:var(--gold-2);letter-spacing:1.5px;}
+  header.site h1{
+    font-size:15px; font-weight:500; color:#e9d3bd; margin:10px 0 0;
+    letter-spacing:.3px;
+  }
+
+  /* ---------- Layout ---------- */
+  .wrap{
+    max-width:1080px; margin:-64px auto 60px; padding:0 16px;
+    display:grid; grid-template-columns:1.5fr 1fr; gap:22px;
+    position:relative; z-index:2;
+  }
+  @media (max-width:860px){ .wrap{grid-template-columns:1fr;} }
+
+  .card{
+    background:var(--paper);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:22px 20px;
+    margin-bottom:18px;
+    border:1px solid var(--line);
+  }
+  .card h2{
+    font-family:'Baloo 2',sans-serif;
+    font-size:19px; margin:0 0 4px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .card h2 .num{
+    width:26px;height:26px;border-radius:8px;
+    background:var(--stone); color:var(--gold-2);
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:13px; font-weight:800; flex:none;
+  }
+  .card .sub{ color:var(--muted); font-size:13px; margin:0 0 16px; }
+
+  /* ---------- Form fields ---------- */
+  .field{ margin-bottom:16px; }
+  .field label{
+    display:block; font-weight:700; font-size:13px; margin-bottom:6px;
+    color:var(--ink);
+  }
+  .field .opt{ font-weight:500; color:var(--muted); }
+  .field input, .field textarea{
+    width:100%; padding:12px 14px; border-radius:10px;
+    border:1.5px solid var(--line); font-size:14.5px; font-family:inherit;
+    background:#fff; transition:border-color .15s, box-shadow .15s;
+  }
+  .field textarea{ resize:vertical; min-height:70px; }
+  .field input:focus, .field textarea:focus{
+    outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(255,138,30,.18);
+  }
+  .field.valid input, .field.valid textarea{ border-color:var(--good); background:var(--good-bg); }
+  .field.invalid input, .field.invalid textarea{ border-color:var(--bad); background:var(--bad-bg); }
+  .hint{ font-size:12.5px; margin-top:6px; display:none; font-weight:600; }
+  .field.valid .hint.ok{ display:block; color:var(--good); }
+  .field.invalid .hint.err{ display:block; color:var(--bad); }
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:480px){ .row2{grid-template-columns:1fr;} }
+
+  .locbtn{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--stone); color:var(--gold-2); border:none;
+    padding:11px 16px; border-radius:10px; font-weight:700; font-size:13.5px;
+    cursor:pointer; margin-bottom:12px;
+  }
+  .locbtn:active{ transform:scale(.98); }
+  .locstatus{ font-size:13px; margin:-4px 0 14px; font-weight:600; }
+  .locstatus.ok{ color:var(--good); }
+  .locstatus.warn{ color:#a06a0d; }
+  .locstatus.err{ color:var(--bad); }
+
+  /* ---------- Payment ---------- */
+  .paymethods{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:6px; }
+  @media (max-width:480px){ .paymethods{grid-template-columns:1fr;} }
+  .paymethod{
+    border:1.5px solid var(--line); border-radius:12px; padding:14px;
+    cursor:pointer; display:flex; gap:10px; align-items:flex-start;
+    transition:border-color .15s, background .15s;
+  }
+  .paymethod input{ margin-top:3px; accent-color:var(--gold); }
+  .paymethod strong{ display:block; font-size:14.5px; }
+  .paymethod span{ font-size:12.5px; color:var(--muted); }
+  .paymethod.active{ border-color:var(--gold); background:#fff3e6; }
+  .upi-box{
+    margin-top:14px; padding:14px; border-radius:10px; background:var(--stone);
+    color:var(--cream); display:none;
+  }
+  .upi-box.show{ display:block; }
+  .upi-box .id{ font-family:monospace; font-size:15px; color:var(--gold-2); font-weight:700; }
+  .upi-box .paybtn{
+    margin-top:10px; width:100%; padding:12px; border:none; border-radius:10px;
+    background:var(--gold); color:#1c130f; font-weight:800; cursor:pointer; font-size:14px;
+  }
+  .upi-status{ margin-top:10px; font-size:12.5px; color:#f2c98d; }
+  .cod-box{
+    margin-top:14px; padding:14px; border-radius:10px; background:#fff3e6;
+    color:var(--ink); font-size:13.5px; display:none;
+  }
+  .cod-box.show{ display:block; }
+  .field.invalid .paymethods{ outline:1.5px solid var(--bad); border-radius:12px; }
+
+  /* ---------- Summary ---------- */
+  .summary{ position:sticky; top:16px; }
+  .items{ margin:0 0 12px; padding:0; list-style:none; }
+  .items li{
+    display:grid; grid-template-columns:34px 1fr auto; align-items:center; gap:10px;
+    padding:9px 0; border-bottom:1px dashed var(--line); font-size:13.5px;
+  }
+  .items li .icowrap{ width:34px; height:34px; border-radius:10px; overflow:hidden; }
+  .items li .icowrap svg{ width:100%; height:100%; }
+  .items li .name{ font-weight:600; }
+  .items li .meta{ color:var(--muted); font-size:12px; display:block; }
+  .totals div{ display:flex; justify-content:space-between; padding:5px 0; font-size:13.5px; }
+  .totals .grand{ font-size:18px; font-weight:800; border-top:1.5px solid var(--line); margin-top:8px; padding-top:12px; }
+  .totals .grand span:last-child{ color:var(--gold); }
+
+  .place-btn{
+    width:100%; padding:15px; border:none; border-radius:12px;
+    background:linear-gradient(135deg, var(--gold), var(--gold-2));
+    color:#1c130f; font-family:'Baloo 2',sans-serif; font-weight:800; font-size:16.5px;
+    cursor:pointer; box-shadow:0 8px 18px rgba(255,138,30,.35);
+    margin-top:6px;
+  }
+  .place-btn:disabled{ opacity:.7; cursor:not-allowed; box-shadow:none; }
+  .place-btn:active:not(:disabled){ transform:scale(.99); }
+
+  .order-success{ display:none; text-align:center; }
+  .order-success.show{ display:block; }
+  .order-success .oid{ font-family:monospace; font-size:19px; font-weight:800; color:var(--gold); background:var(--stone); padding:10px; border-radius:10px; margin:10px 0; }
+  .wa-btn{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    background:#25D366; color:#fff; text-decoration:none; font-weight:800;
+    padding:13px; border-radius:12px; margin-top:12px; font-size:14.5px;
+  }
+
+  .top-error{
+    display:none; background:var(--bad-bg); border:1.5px solid var(--bad); color:#8a1f1f;
+    padding:12px 14px; border-radius:10px; font-weight:700; font-size:13.5px; margin-bottom:16px;
+  }
+  .top-error.show{ display:block; }
+
+  footer{ text-align:center; color:#c9b39f; font-size:12.5px; padding:20px; }
+  footer a{ color:var(--gold-2); }
+</style>
+</head>
+<body>
+<div id="site-nav"></div>
+<script src="nav.js"></script>
+
+<header class="site">
+  <div class="brand">
+    <span class="badge">🍕</span>
+    <div>GOLDEN PIZZA CAFE<small>HOT · DELICIOUS · CRISPY — BAHAL</small></div>
+  </div>
+  <h1>Secure Checkout</h1>
+</header>
+
+<div class="wrap">
+  <!-- LEFT COLUMN: FORM -->
+  <div>
+    <div class="top-error" id="topError">⚠️ Please fix the highlighted fields below before placing your order.</div>
+
+    <!-- 1. CUSTOMER DETAILS -->
+    <div class="card">
+      <h2><span class="num">1</span>Customer Details</h2>
+      <p class="sub">We'll use this to confirm and deliver your order.</p>
+
+      <div class="field" id="f-name">
+        <label>Full Name</label>
+        <input type="text" id="name" placeholder="e.g. Amit Kumar" maxlength="50" autocomplete="name">
+        <div class="hint ok">✓ Looks good</div>
+        <div class="hint err">Please enter a valid full name.</div>
+      </div>
+
+      <div class="row2">
+        <div class="field" id="f-mobile">
+          <label>Mobile Number</label>
+          <input type="tel" id="mobile" placeholder="10-digit or +91 xxxxxxxxxx" autocomplete="tel">
+          <div class="hint ok">✓ Valid Indian mobile number</div>
+          <div class="hint err">Please enter a valid 10-digit Indian mobile number.</div>
+        </div>
+        <div class="field" id="f-email">
+          <label>Email</label>
+          <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+          <div class="hint ok">✓ Valid email</div>
+          <div class="hint err">Please enter a valid email address.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. DELIVERY DETAILS -->
+    <div class="card">
+      <h2><span class="num">2</span>Delivery Details</h2>
+      <p class="sub">Golden Pizza Cafe delivers free up to 5&nbsp;KM from Bahal. ₹10/KM beyond that.</p>
+
+      <button type="button" class="locbtn" id="locBtn">📍 Use My Current Location</button>
+      <div class="locstatus" id="locStatus"></div>
+
+      <div class="field" id="f-address">
+        <label>Complete Delivery Address</label>
+        <textarea id="address" maxlength="250" placeholder="House No, Street, Area, Village/Town"></textarea>
+        <div class="hint ok">✓ Looks good</div>
+        <div class="hint err">Please enter your complete delivery address.</div>
+      </div>
+
+      <div class="row2">
+        <div class="field" id="f-city">
+          <label>City</label>
+          <input type="text" id="city" value="Behal" maxlength="40">
+          <div class="hint ok">✓ Valid</div>
+          <div class="hint err">Please enter a valid city name.</div>
+        </div>
+        <div class="field" id="f-pin">
+          <label>PIN Code</label>
+          <input type="text" id="pin" placeholder="127028" inputmode="numeric" maxlength="6">
+          <div class="hint ok">✓ Valid PIN</div>
+          <div class="hint err">Please enter a valid 6-digit PIN code.</div>
+        </div>
+      </div>
+
+      <div class="field" id="f-landmark">
+        <label>Landmark <span class="opt">(optional)</span></label>
+        <input type="text" id="landmark" placeholder="e.g. Near Barmdat Dharamshala" maxlength="100">
+        <div class="hint err">Landmark looks invalid — try a short description.</div>
+      </div>
+
+      <div class="field" style="margin-bottom:0;">
+        <label>Delivery Distance</label>
+        <div id="distanceBox" style="font-size:14px; font-weight:700; color:var(--muted);">
+          Not calculated yet — use current location, or distance will be estimated when you place the order.
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. PAYMENT -->
+    <div class="card">
+      <h2><span class="num">3</span>Payment Method</h2>
+      <p class="sub">Choose how you'd like to pay.</p>
+
+      <div class="field" id="f-payment">
+        <div class="paymethods">
+          <label class="paymethod" id="pm-upi">
+            <input type="radio" name="pay" value="UPI">
+            <div><strong>UPI</strong><span>Pay instantly via any UPI app</span></div>
+          </label>
+          <label class="paymethod" id="pm-cod">
+            <input type="radio" name="pay" value="COD">
+            <div><strong>Cash on Delivery</strong><span>Pay when your order arrives</span></div>
+          </label>
+        </div>
+        <div class="hint err" style="display:block;color:var(--bad);opacity:0;" id="payErr">Please select a payment method.</div>
+
+        <div class="upi-box" id="upiBox">
+          <div style="font-size:12.5px; color:#d8b48f;">UPI ID</div>
+          <div class="id">vamit3421-3@okaxis</div>
+          <button type="button" class="paybtn" id="upiPayBtn">📲 PAY VIA UPI — ₹<span id="upiAmt">0</span></button>
+          <div class="upi-status">Payment status: <strong id="upiStatusText">PENDING</strong> — we'll verify this after you place the order.</div>
+        </div>
+        <div class="cod-box" id="codBox">
+          💵 Pay cash when your order is delivered. Payment status will be marked <strong>COD_PENDING</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN: SUMMARY -->
+  <div class="summary">
+    <div class="card">
+      <h2 style="margin-bottom:14px;">Order Summary</h2>
+      <ul class="items" id="itemsList"><!-- populated by JS --></ul>
+      <div class="totals">
+        <div><span>Subtotal</span><span id="sumSubtotal">₹0</span></div>
+        <div><span>Delivery Fee</span><span id="sumDelivery">₹0</span></div>
+        <div class="grand"><span>Grand Total</span><span id="sumTotal">₹0</span></div>
+      </div>
+      <button type="button" class="place-btn" id="placeBtn">PLACE ORDER</button>
+
+      <div class="order-success" id="orderSuccess">
+        <p style="margin:14px 0 0; font-weight:700;">🎉 Order placed successfully!</p>
+        <div class="oid" id="orderIdText"></div>
+        <a href="#" target="_blank" class="wa-btn" id="waBtn">💬 Order on WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Golden Pizza Cafe · Bahal (Bhiwani) · <a href="tel:7027218194">7027218194</a><br>
+  This is a demo checkout — connect your Supabase project in the config section of this file to go live.
+</footer>
+
+<script>
+/* =========================================================================
+   GOLDEN PIZZA CAFE — CHECKOUT
+   -------------------------------------------------------------------------
+   INTEGRATION NOTE (menu/cart lives on menu.html):
+   menu.html builds the cart and sends it here as a URL parameter:
+       checkout.html?cart=<encoded JSON array>
+   Each item: { id, name, size, qty, price, icon }  — icon is a key into
+   ICONS (icons.js), e.g. "pizza", "sandwich", "burger", "momos",
+   "noodles", "starter", "pasta", "maggie", "shake", "coffee", "mocktail".
+   window.GOLDEN_PIZZA_CART is still supported as a fallback if you embed
+   this page differently. If neither is present, a small demo cart is
+   used so this page is testable on its own.
+   ========================================================================= */
+
+// ---------------------- CONFIG — fill in before going live ----------------------
+const CONFIG = {
+  SUPABASE_URL: "YOUR_SUPABASE_PROJECT_URL",       // e.g. https://xxxxx.supabase.co
+  SUPABASE_ANON_KEY: "YOUR_SUPABASE_ANON_KEY",
+  CAFE_LAT: 28.62972,     // Golden Pizza Cafe, Bahal, Bhiwani (approx — update with exact location)
+  CAFE_LNG: 75.61778,
+  FREE_KM: 5,
+  RATE_PER_KM: 10,        // ₹ per KM beyond FREE_KM
+  WHATSAPP_NUMBER: "917027218194"
+};
+
+const CART_FALLBACK_DEMO = [
+  { id: "PZ-FH-M", name: "Farm House Pizza", size: "Medium", qty: 1, price: 199, icon: "pizza" },
+  { id: "SW-TP",   name: "Tandoori Paneer Sandwich", size: "-", qty: 2, price: 99, icon: "sandwich" },
+  { id: "MK-COLD", name: "Cold Coffee", size: "-", qty: 1, price: 59, icon: "coffee" }
+];
+
+function loadCartFromUrl() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const raw = params.get("cart");
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) && parsed.length ? parsed : null;
+  } catch (e) { return null; }
+}
+
+const CART = loadCartFromUrl()
+  || (Array.isArray(window.GOLDEN_PIZZA_CART) && window.GOLDEN_PIZZA_CART.length ? window.GOLDEN_PIZZA_CART : null)
+  || CART_FALLBACK_DEMO;
+
+let supabase = null;
+try {
+  if (CONFIG.SUPABASE_URL.startsWith("http") && CONFIG.SUPABASE_ANON_KEY.length > 10) {
+    supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+  }
+} catch (e) { /* not configured yet — order will still work via WhatsApp */ }
+
+// ---------------------- STATE ----------------------
+let state = {
+  distanceKm: null,
+  deliveryFee: 0,
+  locationSource: "none",   // "gps" | "none"
+  paymentMethod: null,
+  submitting: false
+};
+
+// ---------------------- HELPERS ----------------------
+const $ = (id) => document.getElementById(id);
+
+function setFieldState(fieldId, valid) {
+  const el = $(fieldId);
+  el.classList.remove("valid", "invalid");
+  if (valid === true) el.classList.add("valid");
+  if (valid === false) el.classList.add("invalid");
+}
+
+function money(n) { return "₹" + Number(n).toFixed(0); }
+
+// ---------------------- VALIDATORS ----------------------
+function validateName(raw) {
+  const v = raw.trim().replace(/\s+/g, " ");
+  if (v.length < 2 || v.length > 50) return false;
+  return /^[A-Za-z][A-Za-z ]*$/.test(v);
+}
+
+function normalizeMobile(raw) {
+  let v = raw.trim().replace(/[\s-]/g, "");
+  if (v.startsWith("+91")) v = v.slice(3);
+  else if (v.startsWith("91") && v.length === 12) v = v.slice(2);
+  return v;
+}
+
+function validateMobile(raw) {
+  const v = normalizeMobile(raw);
+  if (!/^[6-9]\d{9}$/.test(v)) return false;       // valid Indian mobile prefixes 6-9
+  if (/^(\d)\1{9}$/.test(v)) return false;          // reject 0000000000, 1111111111 etc.
+  return true;
+}
+
+function validateEmail(raw) {
+  const v = raw.trim();
+  // requires local@domain.tld — rejects abc, abc@, abc@gmail, @gmail.com
+  return /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(v);
+}
+
+function validateAddress(raw) {
+  const v = raw.trim();
+  if (v.length < 10 || v.length > 250) return false;
+  if (/^[\s\-_.]*$/.test(v)) return false;           // not only spaces/dashes
+  if (!/[A-Za-z]/.test(v)) return false;              // must contain some letters
+  return true;
+}
+
+function validateCity(raw) {
+  const v = raw.trim();
+  if (v.length < 2) return false;
+  return /^[A-Za-z ]+$/.test(v);
+}
+
+function validatePin(raw) {
+  return /^[1-9]\d{5}$/.test(raw.trim());
+}
+
+function validateLandmark(raw) {
+  const v = raw.trim();
+  if (v.length === 0) return true; // optional
+  if (v.length < 2 || v.length > 100) return false;
+  return /[A-Za-z0-9]/.test(v);
+}
+
+// ---------------------- LIVE FIELD BINDING ----------------------
+function bindField(inputId, fieldId, validator, { allowEmptyUntouched = true } = {}) {
+  const input = $(inputId);
+  let touched = false;
+  input.addEventListener("blur", () => { touched = true; run(); });
+  input.addEventListener("input", () => { if (touched) run(); });
+  function run() {
+    const val = input.value;
+    if (allowEmptyUntouched && val.trim() === "" && !touched) { setFieldState(fieldId, null); return; }
+    setFieldState(fieldId, validator(val));
+  }
+  return run;
+}
+
+const runName = bindField("name", "f-name", validateName);
+const runMobile = bindField("mobile", "f-mobile", validateMobile);
+const runEmail = bindField("email", "f-email", validateEmail);
+const runAddress = bindField("address", "f-address", validateAddress);
+const runCity = bindField("city", "f-city", validateCity);
+const runPin = bindField("pin", "f-pin", validatePin);
+const runLandmark = bindField("landmark", "f-landmark", validateLandmark);
+
+// ---------------------- GEOLOCATION + DISTANCE ----------------------
+function haversineKm(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function computeDeliveryFee(km) {
+  if (km <= CONFIG.FREE_KM) return 0;
+  return Math.round((km - CONFIG.FREE_KM) * CONFIG.RATE_PER_KM);
+}
+
+function updateDistanceUI() {
+  const box = $("distanceBox");
+  if (state.distanceKm == null) {
+    box.textContent = "Not calculated yet — use current location, or distance will be estimated when you place the order.";
+    box.style.color = "var(--muted)";
+  } else {
+    box.innerHTML = `Delivery Distance: <b>${state.distanceKm.toFixed(1)} KM</b> &nbsp;•&nbsp; Delivery Fee: <b>${money(state.deliveryFee)}</b>`;
+    box.style.color = "var(--ink)";
+  }
+  renderSummary();
+}
+
+$("locBtn").addEventListener("click", () => {
+  const status = $("locStatus");
+  if (!("geolocation" in navigator)) {
+    status.textContent = "Geolocation isn't supported on this device. Please enter your address manually.";
+    status.className = "locstatus warn";
+    return;
+  }
+  status.textContent = "Getting your location…";
+  status.className = "locstatus";
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const { latitude, longitude } = pos.coords;
+      const km = haversineKm(CONFIG.CAFE_LAT, CONFIG.CAFE_LNG, latitude, longitude);
+      state.distanceKm = km;
+      state.deliveryFee = computeDeliveryFee(km);
+      state.locationSource = "gps";
+      state.lat = latitude; state.lng = longitude;
+      status.textContent = "✓ Location captured — distance calculated from your device's actual coordinates.";
+      status.className = "locstatus ok";
+      updateDistanceUI();
+    },
+    (err) => {
+      state.locationSource = "none";
+      status.textContent = "Location permission was not granted. Please enter your complete delivery address.";
+      status.className = "locstatus err";
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
+});
+
+// ---------------------- PAYMENT METHOD ----------------------
+document.querySelectorAll('input[name="pay"]').forEach(radio => {
+  radio.addEventListener("change", () => {
+    state.paymentMethod = radio.value;
+    document.querySelectorAll(".paymethod").forEach(p => p.classList.remove("active"));
+    $("pm-" + radio.value.toLowerCase()).classList.add("active");
+    $("upiBox").classList.toggle("show", radio.value === "UPI");
+    $("codBox").classList.toggle("show", radio.value === "COD");
+    setFieldState("f-payment", true);
+    $("payErr").style.opacity = 0;
+  });
+});
+
+$("upiPayBtn").addEventListener("click", () => {
+  const total = getTotals().total;
+  const upiId = "vamit3421-3@okaxis";
+  const link = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent("Golden Pizza Cafe")}&am=${total}&cu=INR&tn=${encodeURIComponent("Golden Pizza Cafe Order")}`;
+  window.location.href = link;
+  $("upiStatusText").textContent = "PENDING (awaiting verification)";
+});
+
+// ---------------------- SUMMARY ----------------------
+function getTotals() {
+  const subtotal = CART.reduce((s, i) => s + i.price * i.qty, 0);
+  const deliveryFee = state.deliveryFee || 0;
+  return { subtotal, deliveryFee, total: subtotal + deliveryFee };
+}
+
+function renderSummary() {
+  const list = $("itemsList");
+  list.innerHTML = "";
+  CART.forEach(item => {
+    const li = document.createElement("li");
+    const icoSvg = (item.icon && ICONS[item.icon]) ? ICONS[item.icon] : ICONS.starter;
+    li.innerHTML = `<span class="icowrap">${icoSvg}</span><span><span class="name">${item.name}</span><span class="meta">${item.size !== "-" ? item.size + " · " : ""}Qty ${item.qty}</span></span><span>${money(item.price * item.qty)}</span>`;
+    list.appendChild(li);
+  });
+  const t = getTotals();
+  $("sumSubtotal").textContent = money(t.subtotal);
+  $("sumDelivery").textContent = t.deliveryFee > 0 ? money(t.deliveryFee) : "FREE";
+  $("sumTotal").textContent = money(t.total);
+  $("upiAmt").textContent = t.total;
+}
+renderSummary();
+
+// ---------------------- FINAL VALIDATION + SUBMIT ----------------------
+function focusAndScroll(inputId) {
+  const el = $(inputId);
+  el.scrollIntoView({ behavior: "smooth", block: "center" });
+  el.focus();
+}
+
+function runFullValidation() {
+  const checks = [
+    { input: "name", field: "f-name", ok: validateName($("name").value) },
+    { input: "mobile", field: "f-mobile", ok: validateMobile($("mobile").value) },
+    { input: "email", field: "f-email", ok: validateEmail($("email").value) },
+    { input: "address", field: "f-address", ok: validateAddress($("address").value) },
+    { input: "city", field: "f-city", ok: validateCity($("city").value) },
+    { input: "pin", field: "f-pin", ok: validatePin($("pin").value) },
+    { input: "landmark", field: "f-landmark", ok: validateLandmark($("landmark").value) },
+  ];
+  checks.forEach(c => setFieldState(c.field, c.ok));
+
+  const paymentOk = !!state.paymentMethod;
+  $("payErr").style.opacity = paymentOk ? 0 : 1;
+  if (!paymentOk) $("f-payment").classList.add("invalid"); else $("f-payment").classList.remove("invalid");
+
+  const firstInvalid = checks.find(c => !c.ok);
+  if (firstInvalid) { focusAndScroll(firstInvalid.input); return false; }
+  if (!paymentOk) { focusAndScroll("pm-upi"); return false; }
+  if (!CART.length) { alert("Your cart is empty."); return false; }
+  return true;
+}
+
+function generateOrderId() {
+  const d = new Date();
+  const ymd = d.getFullYear().toString() +
+              String(d.getMonth() + 1).padStart(2, "0") +
+              String(d.getDate()).padStart(2, "0");
+  const rand = Math.floor(1000 + Math.random() * 9000);
+  return `GPC-${ymd}-${rand}`;
+}
+
+function buildWhatsAppMessage(orderId, totals) {
+  const lines = [
+    "Golden Pizza Cafe Order",
+    `Order ID: ${orderId}`,
+    `Customer Name: ${$("name").value.trim()}`,
+    `Phone: ${normalizeMobile($("mobile").value)}`,
+    `Email: ${$("email").value.trim()}`,
+    "",
+    "Items:",
+    ...CART.map(i => `- ${i.name}${i.size !== "-" ? " (" + i.size + ")" : ""} x${i.qty} — ${money(i.price * i.qty)}`),
+    "",
+    `Subtotal: ${money(totals.subtotal)}`,
+    `Delivery Fee: ${totals.deliveryFee > 0 ? money(totals.deliveryFee) : "FREE"}`,
+    `Grand Total: ${money(totals.total)}`,
+    `Payment Method: ${state.paymentMethod}`,
+    `Payment Status: ${state.paymentMethod === "UPI" ? "PENDING" : "COD_PENDING"}`,
+    "",
+    `Address: ${$("address").value.trim()}, ${$("city").value.trim()} - ${$("pin").value.trim()}`,
+    $("landmark").value.trim() ? `Landmark: ${$("landmark").value.trim()}` : null,
+  ].filter(Boolean);
+  return lines.join("\n");
+}
+
+async function saveOrderToSupabase(order) {
+  if (!supabase) return { ok: false, reason: "not_configured" };
+  try {
+    const { error } = await supabase.from("orders").insert([order]);
+    if (error) throw error;
+    return { ok: true };
+  } catch (e) {
+    console.error("Supabase insert failed:", e);
+    return { ok: false, reason: e.message };
+  }
+}
+
+$("placeBtn").addEventListener("click", async () => {
+  if (state.submitting) return;
+  $("topError").classList.remove("show");
+
+  if (!runFullValidation()) {
+    $("topError").classList.add("show");
+    return;
+  }
+
+  state.submitting = true;
+  const btn = $("placeBtn");
+  btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.textContent = "Processing Order…";
+
+  const totals = getTotals();
+  const orderId = generateOrderId();
+  const paymentStatus = state.paymentMethod === "UPI" ? "PENDING" : "COD_PENDING";
+
+  const orderRow = {
+    order_id: orderId,
+    customer_name: $("name").value.trim(),
+    phone: normalizeMobile($("mobile").value),
+    email: $("email").value.trim(),
+    address: $("address").value.trim(),
+    city: $("city").value.trim(),
+    pin_code: $("pin").value.trim(),
+    landmark: $("landmark").value.trim() || null,
+    latitude: state.lat || null,
+    longitude: state.lng || null,
+    distance_km: state.distanceKm != null ? Number(state.distanceKm.toFixed(2)) : null,
+    delivery_fee: totals.deliveryFee,
+    subtotal: totals.subtotal,
+    total: totals.total,
+    payment_method: state.paymentMethod,
+    payment_status: paymentStatus,
+    order_status: "NEW",
+    items: CART, // jsonb column — see schema.sql
+  };
+  // NOTE: per the security requirement, the backend/Supabase policies or an
+  // edge function should re-verify item prices and recompute subtotal/total
+  // from trusted product data before trusting this row — see schema.sql notes.
+
+  const result = await saveOrderToSupabase(orderRow);
+
+  btn.textContent = originalText;
+  btn.disabled = false;
+  state.submitting = false;
+
+  if (!result.ok) {
+    console.warn("Order was not saved to Supabase:", result.reason, "— continuing with WhatsApp handoff.");
+  }
+
+  $("orderIdText").textContent = orderId;
+  const waMsg = buildWhatsAppMessage(orderId, totals);
+  $("waBtn").href = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(waMsg)}`;
+  $("orderSuccess").classList.add("show");
+  btn.style.display = "none";
+  $("orderSuccess").scrollIntoView({ behavior: "smooth", block: "center" });
+});
+</script>
+</body>
+</html>

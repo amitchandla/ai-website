@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Golden Pizza Cafe — Bahal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="icons.js"></script>
+<script>window.GPC_ACTIVE_PAGE = "home";</script>
+<style>
+  :root{
+    --char:#1c130f; --stone:#2c1a14; --gold:#ff8a1e; --gold-2:#ffb627;
+    --cream:#fff7ee; --paper:#fffaf3; --ink:#2a1c14; --muted:#8a6f60;
+    --line:#e7d9c9; --radius:16px; --shadow:0 10px 26px rgba(28,19,15,.16);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Inter',system-ui,sans-serif; color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #3a2119 0%, transparent 60%),
+      radial-gradient(1000px 500px at 110% 10%, #46261b 0%, transparent 55%),
+      var(--char);
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{ padding:56px 20px 100px; text-align:center; color:var(--cream); position:relative; overflow:hidden; }
+  .hero::after{ content:""; position:absolute; left:0; right:0; bottom:0; height:60px; background:var(--cream); border-radius:50% 50% 0 0/100% 100% 0 0; transform:scaleX(1.3); }
+  .hero-logo{ width:92px; height:92px; border-radius:50%; object-fit:cover; box-shadow:0 8px 24px rgba(0,0,0,.4); border:3px solid var(--gold-2); position:relative; z-index:2; }
+  .hero h1{ font-family:'Baloo 2',sans-serif; font-size:34px; margin:18px 0 6px; position:relative; z-index:2; }
+  .hero h1 span{ color:var(--gold-2); }
+  .hero p.sub{ color:#e9d3bd; font-size:14.5px; max-width:440px; margin:0 auto; position:relative; z-index:2; }
+  .hero .ctas{ display:flex; gap:12px; justify-content:center; margin-top:26px; position:relative; z-index:2; flex-wrap:wrap; }
+  .btn{ font-family:'Baloo 2',sans-serif; font-weight:700; font-size:15px; padding:13px 26px; border-radius:12px; text-decoration:none; display:inline-block; }
+  .btn.primary{ background:linear-gradient(135deg, var(--gold), var(--gold-2)); color:#1c130f; box-shadow:0 8px 18px rgba(255,138,30,.35); }
+  .btn.ghost{ border:1.5px solid var(--gold-2); color:var(--gold-2); }
+
+  .wrap{ max-width:960px; margin:-56px auto 0; padding:0 18px 60px; position:relative; z-index:2; }
+
+  /* ---------- Highlight strip ---------- */
+  .strip{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:34px; }
+  @media (max-width:700px){ .strip{ grid-template-columns:1fr; } }
+  .strip .card{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:18px; text-align:center;
+  }
+  .strip .card .icowrap{ width:48px; height:48px; margin:0 auto 10px; border-radius:50%; overflow:hidden; }
+  .strip .card .icowrap svg{ width:100%; height:100%; }
+  .strip .card strong{ display:block; font-size:14.5px; margin-bottom:4px; }
+  .strip .card span{ font-size:12.5px; color:var(--muted); }
+
+  /* ---------- Offers ---------- */
+  .section-title{ font-family:'Baloo 2',sans-serif; color:var(--cream); font-size:21px; margin:0 0 14px; }
+  .offers{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:38px; }
+  @media (max-width:760px){ .offers{ grid-template-columns:1fr; } }
+  .offer{
+    background:var(--stone); border-radius:var(--radius); padding:20px;
+    color:var(--cream); border:1px solid rgba(255,182,39,.25); position:relative;
+  }
+  .offer .price{ font-family:'Baloo 2',sans-serif; font-size:24px; color:var(--gold-2); font-weight:800; }
+  .offer p{ font-size:13px; color:#e9d3bd; margin:8px 0 0; line-height:1.5; }
+
+  /* ---------- Popular items ---------- */
+  .popular{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:10px; }
+  @media (max-width:760px){ .popular{ grid-template-columns:repeat(2,1fr); } }
+  .pitem{ background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px; text-align:center; }
+  .pitem .icowrap{ width:56px; height:56px; margin:0 auto 8px; border-radius:16px; overflow:hidden; }
+  .pitem .icowrap svg{ width:100%; height:100%; }
+  .pitem strong{ display:block; font-size:13.5px; }
+  .pitem span{ font-size:12.5px; color:var(--gold); font-weight:700; }
+
+  footer{ text-align:center; color:#c9b39f; font-size:12.5px; padding:20px 16px; }
+  footer a{ color:var(--gold-2); text-decoration:none; }
+</style>
+</head>
+<body>
+<div id="site-nav"></div>
+<script src="nav.js"></script>
+
+<section class="hero">
+  <img class="hero-logo" src="assets/logo.jpg" alt="Golden Pizza Cafe logo">
+  <h1>Hot, Delicious &amp; <span>Crispy</span> Food in Bahal</h1>
+  <p class="sub">Pizza starts from ₹59 · Sandwiches, burgers, momos, pasta &amp; more · Free delivery up to 5&nbsp;KM</p>
+  <div class="ctas">
+    <a href="menu.html" class="btn primary">See Full Menu</a>
+    <a href="contact.html" class="btn ghost">Order Now</a>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <div class="strip">
+    <div class="card">
+      <div class="icowrap" id="ico-pizza"></div>
+      <strong>Wide Variety</strong>
+      <span>Single, double &amp; mix-topping pizzas, sandwiches, burgers &amp; more</span>
+    </div>
+    <div class="card">
+      <div class="icowrap" id="ico-noodles"></div>
+      <strong>Freshly Made</strong>
+      <span>Hot &amp; crispy, cooked to order every time</span>
+    </div>
+    <div class="card">
+      <div class="icowrap" id="ico-mocktail"></div>
+      <strong>Free Delivery</strong>
+      <span>Up to 5 KM from Bahal — ₹10/KM beyond that</span>
+    </div>
+  </div>
+
+  <h2 class="section-title">Combo Offers</h2>
+  <div class="offers">
+    <div class="offer">
+      <div class="price">₹199</div>
+      <p>1 Pizza + 1 Sandwich + 1 Burger + 1 Cold Coffee with Ice Cream</p>
+    </div>
+    <div class="offer">
+      <div class="price">₹399</div>
+      <p>1 Medium Pizza + 2 Sandwich + 2 Burger + 2 Cold Coffee with Ice Cream</p>
+    </div>
+    <div class="offer">
+      <div class="price">₹499</div>
+      <p>1 Large Pizza + 2 Burger + 2 Sandwich + 2 Cold Coffee with Ice Cream</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Popular Picks</h2>
+  <div class="popular" id="popularGrid"></div>
+
+</div>
+
+<footer>
+  Golden Pizza Cafe · Nearby Pilani Road, Bahal (Bhiwani) · <a href="tel:7027218194">7027218194</a><br>
+  <a href="about.html">About</a> · <a href="contact.html">Contact</a> · <a href="menu.html">Menu</a>
+</footer>
+
+<script>
+  document.getElementById("ico-pizza").innerHTML = ICONS.pizza;
+  document.getElementById("ico-noodles").innerHTML = ICONS.noodles;
+  document.getElementById("ico-mocktail").innerHTML = ICONS.mocktail;
+
+  const POPULAR = [
+    { name: "Farm House Pizza", price: "From ₹149", icon: "pizza" },
+    { name: "Golden Pizza Special Sandwich", price: "₹130", icon: "sandwich" },
+    { name: "Makhni Burger", price: "₹79", icon: "burger" },
+    { name: "Oreo Shake", price: "₹79", icon: "shake" },
+  ];
+  const grid = document.getElementById("popularGrid");
+  POPULAR.forEach(p => {
+    const el = document.createElement("div");
+    el.className = "pitem";
+    el.innerHTML = `<div class="icowrap">${ICONS[p.icon]}</div><strong>${p.name}</strong><span>${p.price}</span>`;
+    grid.appendChild(el);
+  });
+</script>
+</body>
+</html>
